@@ -3,8 +3,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import '../App.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { Upload } from './Upload';
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoia3Vyb2RldnMiLCJhIjoiY2wxNHE0dXk3MDh6NDNqdGVkbnhteHczeSJ9.D74G6X7FCju8ASr5NqbUCw';
+mapboxgl.accessToken = process.env.REACT_APP_PUBLIC_ACCESS_TOKEN;
 
 function App() {
 
@@ -24,11 +25,27 @@ function App() {
     });
   });
 
+  const HandleMapSource = (e) => {
+
+     map.current.addSource(e.target.files[0].name, {
+      type: 'geojson',
+      data: 'https://kurodevs.github.io/test-abandoned/geo.geojson'
+      });
+
+      map.current.addLayer({
+        'id': 'iss',
+        'type': 'symbol',
+        'source': e.target.files[0].name,
+        'layout': {
+        'icon-image': 'rocket-15'
+        }
+        });
+  }
 
   return (
     <div className="App">
       <div>
-        <input type="file" />
+        <Upload />
       </div>
       <div ref={mapContainer} className="map-container" />
     </div>
